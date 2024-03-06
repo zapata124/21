@@ -12,6 +12,7 @@ export type CardTypes = {
   value: string;
   suit: string;
 };
+
 interface DeckTypes {
   success: boolean | null;
   deck_id: string | null;
@@ -52,6 +53,7 @@ const DeckProviderContext = createContext<DeckProviderTypes>({
 interface DeckProviderProp {
   children: ReactNode;
 }
+
 const DeckProvider: React.FC<DeckProviderProp> = ({ children }) => {
   const [currentDeck, setDeck] = useState<DeckTypes>({
     success: null,
