@@ -1,6 +1,8 @@
 import React, { useState, createContext, ReactNode, useContext } from "react";
+import { getTotal } from "../utils/getTotal";
+import { checkWinner } from "../utils/checkWinner";
 
-type CardTypes = {
+export type CardTypes = {
   code: string;
   image: string;
   images: {
@@ -17,18 +19,19 @@ interface DeckTypes {
   remaining: number | null;
 }
 
-interface DeckProviderTypes {
-  success: boolean | null;
-  deck_id: string | null;
-  shuffled: boolean | null;
-  remaining: number | null;
+interface DrawCardTypes extends Omit<DeckTypes, "shuffled"> {
+  cards: CardTypes[];
+}
+
+interface DeckProviderTypes extends DeckTypes {
   handleShuffle: () => void;
-  updateDeck: (deckCount: number) => void;
   beginGame: () => void;
-  getHand: (playerType: string, count: number) => void;
-  houseCards: CardTypes[];
-  playerCards: CardTypes[];
   drawCard: () => void;
+  getWinner: () => { houseTotal: number; playerTotal: number; winner: string };
+  dealerCards: CardTypes[];
+  playerCards: CardTypes[];
+  setHands: () => void;
+  playAgain: () => void;
 }
 
 const DeckProviderContext = createContext<DeckProviderTypes>({
@@ -37,93 +40,105 @@ const DeckProviderContext = createContext<DeckProviderTypes>({
   shuffled: null,
   remaining: null,
   handleShuffle: () => undefined,
-  updateDeck: () => undefined,
   beginGame: () => undefined,
-  getHand: () => undefined,
-  houseCards: [],
-  playerCards: [],
   drawCard: () => undefined,
+  getWinner: () => undefined,
+  dealerCards: [],
+  playerCards: [],
+  setHands: () => undefined,
+  playAgain: () => undefined,
 });
 
 interface DeckProviderProp {
   children: ReactNode;
 }
 const DeckProvider: React.FC<DeckProviderProp> = ({ children }) => {
-  const [deck, setDeck] = useState<DeckTypes>({
+  const [currentDeck, setDeck] = useState<DeckTypes>({
     success: null,
     deck_id: null,
     shuffled: null,
     remaining: null,
   });
 
-  const [houseCards, setHouseCards] = useState([]);
+  const [dealerCards, setDealerCards] = useState([]);
   const [playerCards, setPlayerCards] = useState([]);
 
   const fetchGame = (url: string) => {
-    fetch(url)
-      .then((deck: any) => deck.json())
-      .then((deck: any) => {
-        setDeck(deck);
+    const data = fetch(url)
+      .then((data: Response) => data.json())
+      .then((data: unknown) => {
+        return data;
       });
+
+    return data;
   };
-  const beginGame = () => {
-    fetchGame("https://deckofcardsapi.com/api/deck/new/");
+
+  const beginGame = async () => {
+    const deck = (await fetchGame(
+      "https://deckofcardsapi.com/api/deck/new/"
+    )) as DeckTypes;
+    setDeck(deck);
+  };
+
+  const setHands = async () => {
+    const url = `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/draw/?count=2`;
+
+    const dealerHand = (await fetchGame(url)) as DrawCardTypes;
+    const playerHand = (await fetchGame(url)) as DrawCardTypes;
+    console.log(dealerHand, playerHand);
+    setDealerCards(dealerHand.cards);
+    setPlayerCards(playerHand.cards);
   };
 
   const handleShuffle = () => {
     fetchGame(
-      `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/shuffle/`
+      `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/shuffle/?remaining=true`
     );
   };
 
-  const getHand = (playerType: string, count: number) => {
-    const mapPlayer = {
-      house: setHouseCards,
-      player: setPlayerCards,
-    };
-    fetch(
-      `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=${count}`
-    )
-      .then((deck: any) => deck.json())
-      .then((deck: any) => {
-        mapPlayer[playerType](deck.cards);
-      });
+  const playAgain = async () => {
+    await fetchGame(
+      `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/shuffle/`
+    );
+    setHands();
   };
 
-  const drawCard = () => {
-    fetch(
-      `https://www.deckofcardsapi.com/api/deck/${deck.deck_id}/draw/?count=1`
-    )
-      .then((deck: any) => deck.json())
-      .then((deck: any) => {
-        setPlayerCards((prev) => {
-          return [...prev, ...deck.cards];
-        });
-      });
-  };
-  const updateDeck = (deckCount: number) => {
-    setDeck((prev: DeckTypes) => {
-      return {
-        ...prev,
-        remaining: deckCount,
-      };
+  const drawCard = async () => {
+    const deck = (await fetchGame(
+      `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/draw/?count=1`
+    )) as DrawCardTypes;
+
+    setPlayerCards((prev) => {
+      return [...prev, ...deck.cards];
     });
+  };
+
+  const getWinner = () => {
+    const houseTotal = getTotal(dealerCards);
+    const playerTotal = getTotal(playerCards);
+    const winner = checkWinner(houseTotal, playerTotal);
+    return {
+      houseTotal,
+      playerTotal,
+      winner,
+    };
   };
 
   return (
     <DeckProviderContext.Provider
       value={{
-        success: deck.success,
-        deck_id: deck.deck_id,
-        shuffled: deck.shuffled,
-        remaining: deck.remaining,
-        handleShuffle,
-        updateDeck,
-        beginGame,
-        getHand,
-        houseCards,
+        success: currentDeck.success,
+        deck_id: currentDeck.deck_id,
+        shuffled: currentDeck.shuffled,
+        remaining: currentDeck.remaining,
+        dealerCards,
         playerCards,
+        handleShuffle,
+        beginGame,
+        setHands,
         drawCard,
+        getWinner,
+        playAgain,
       }}
     >
       {children}
@@ -136,4 +151,5 @@ const useDeck = () => {
   return Deck;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export { DeckProvider, useDeck };

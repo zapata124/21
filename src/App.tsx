@@ -1,17 +1,24 @@
-import React, { useState } from "react";
-import { Box, Button, Stack, Typography } from "@mui/joy";
+import { useEffect } from "react";
+import { Box, Button, Stack } from "@mui/joy";
 import Dealer from "./components/Dealer";
 import Player from "./components/Player";
 import { useDeck } from "./providers/DeckProvider";
-import { useEffect } from "react";
+import ResultsModal from "./components/ResultsModal";
 
 function App() {
-  const { deck_id, remaining, shuffled, success, handleShuffle, beginGame } =
-    useDeck();
+  const { deck_id, beginGame, setHands, playAgain } = useDeck();
 
   useEffect(() => {
     beginGame();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (deck_id) {
+      setHands();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deck_id]);
   return (
     <Box
       width={"100vw"}
@@ -27,17 +34,10 @@ function App() {
         <Dealer />
         <Player />
       </Stack>
-      {deck_id && (
-        <Stack bgcolor={"white"}>
-          <Typography>{deck_id}</Typography>
-          <Typography>{remaining}</Typography>
-          <Typography>{shuffled.toString()}</Typography>
-          <Typography>{success.toString()}</Typography>
-        </Stack>
-      )}
-      <Button onClick={handleShuffle}>Shuffle</Button>
+      <Button onClick={() => playAgain()}>New Game</Button>
+      <ResultsModal />
     </Box>
   );
 }
 
-export default React.memo(App);
+export default App;

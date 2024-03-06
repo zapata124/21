@@ -1,21 +1,14 @@
 import { Button, Card, Stack, Typography } from "@mui/joy";
-
-import { useDeck } from "../providers/DeckProvider";
-import { CardTypes } from "../hooks/useDrawCard";
-import { useEffect } from "react";
+import { CardTypes, useDeck } from "../providers/DeckProvider";
 
 const Player: React.FC = () => {
-  const { deck_id, getHand, playerCards, drawCard } = useDeck();
+  const { playerCards, drawCard } = useDeck();
 
-  useEffect(() => {
-    if (deck_id) {
-      getHand("player", 2);
-    }
-  }, [deck_id]);
-
-  console.log({ playerCards });
   return (
     <Stack justifyContent={"center"} alignItems={"center"}>
+      <Typography level="h4" textColor={"gold"} pt={2}>
+        Player
+      </Typography>
       <Stack direction={"row"}>
         {playerCards && (
           <>
@@ -28,11 +21,8 @@ const Player: React.FC = () => {
             })}
           </>
         )}
+        <Button onClick={() => drawCard()}>Hit</Button>
       </Stack>
-      <Button onClick={() => drawCard()}>Hit</Button>
-      <Typography level="h4" textColor={"gold"} pt={2}>
-        Player
-      </Typography>
     </Stack>
   );
 };
