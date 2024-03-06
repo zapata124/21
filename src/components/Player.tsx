@@ -1,6 +1,7 @@
 import { Button, Card, Stack, Typography } from "@mui/joy";
 import { CardTypes, useDeck } from "../providers/DeckProvider";
 import ResultsModal from "./ResultsModal";
+import { Grow } from "@mui/material";
 
 const Player: React.FC = () => {
   const { playerCards, drawCard } = useDeck();
@@ -10,14 +11,27 @@ const Player: React.FC = () => {
       <Typography level="h4" textColor={"gold"} pb={2}>
         Player
       </Typography>
-      <Stack direction={"row"}>
+      <Stack
+        direction={"row"}
+        height={"210px"}
+        maxWidth={1500}
+        overflow={"auto"}
+        sx={{ overflowY: "hidden" }}
+      >
         {playerCards && (
           <>
             {playerCards?.map((card: CardTypes) => {
               return (
-                <Card sx={{ width: "8rem" }} key={`${card.value}-${card.suit}`}>
-                  <img src={card.image} alt="game-card" />
-                </Card>
+                <Grow
+                  in={true}
+                  style={{ transformOrigin: "0 0 0" }}
+                  timeout={1000}
+                  key={`${card.value}-${card.suit}`}
+                >
+                  <Card sx={{ width: "8rem" }}>
+                    <img src={card.image} alt="game-card" />
+                  </Card>
+                </Grow>
               );
             })}
           </>

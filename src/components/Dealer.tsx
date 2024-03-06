@@ -1,18 +1,26 @@
 import React from "react";
 import { Card, Stack, Typography } from "@mui/joy";
 import { CardTypes, useDeck } from "../providers/DeckProvider";
+import { Grow } from "@mui/material";
 
 const DealerCards = ({ dealerCards }) => {
   return (
     <Stack alignItems={"center"}>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} height={"210px"}>
         {dealerCards && (
           <>
             {dealerCards.map((card: CardTypes) => {
               return (
-                <Card sx={{ width: "8rem" }} key={`${card.value}-${card.suit}`}>
-                  <img src={card.image} alt="game-card" />
-                </Card>
+                <Grow
+                  in={true}
+                  style={{ transformOrigin: "0 0 0" }}
+                  timeout={1000}
+                  key={`${card.value}-${card.suit}`}
+                >
+                  <Card sx={{ width: "8rem" }}>
+                    <img src={card.image} alt="game-card" />
+                  </Card>
+                </Grow>
               );
             })}
           </>

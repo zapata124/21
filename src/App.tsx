@@ -18,33 +18,36 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deck_id]);
+  useEffect(() => {}, []);
   return (
-    <Box
-      width={"100vw"}
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box>
-        <Stack direction={"column"} spacing={20}>
-          <Dealer />
-          <Player />
-        </Stack>
-        <Button
-          onClick={() => playAgain()}
-          sx={{
-            display: "absolute",
-            left: 420,
-            bottom: 410,
-            borderRadius: 100,
-          }}
-        >
-          New Game
-        </Button>
+    <>
+      <Box
+        width={"100vw"}
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Box>
+          <Stack direction={"column"} spacing={20}>
+            <Dealer />
+            <Player />
+          </Stack>
+        </Box>
       </Box>
-    </Box>
+      <Button
+        onClick={() => playAgain()}
+        sx={{
+          position: "relative",
+          left: "65%",
+          bottom: 410,
+          borderRadius: 100,
+        }}
+      >
+        New Game
+      </Button>
+    </>
   );
 }
 

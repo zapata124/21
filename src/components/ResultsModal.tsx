@@ -5,6 +5,7 @@ import {
   Modal,
   ModalClose,
   ModalDialog,
+  Stack,
   Typography,
 } from "@mui/joy";
 import { useDeck } from "../providers/DeckProvider";
@@ -15,6 +16,11 @@ const ResultsModal: React.FC = () => {
 
   const handleModalState = () => {
     setOpen(!open);
+  };
+
+  const handlePlayAgain = () => {
+    setHands();
+    handleModalState();
   };
 
   return (
@@ -34,10 +40,18 @@ const ResultsModal: React.FC = () => {
             <Typography level={"h3"}>{winner}</Typography>
           </Box>
           <ModalClose />
-          <Typography>Game Score</Typography>
-          <Typography>{houseTotal}</Typography>
-          <Typography>{playerTotal}</Typography>
-          <Button onClick={() => setHands()}>Play again</Button>
+          <Stack justifyContent={"center"} alignItems={"center"}>
+            <Typography level={"body-md"}>Score</Typography>
+            <Stack direction={"row"} spacing={1}>
+              <Typography level={"body-sm"}>Dealer </Typography>
+              <Typography level={"body-sm"}>{houseTotal}</Typography>
+            </Stack>
+            <Stack direction={"row"} spacing={1}>
+              <Typography level={"body-sm"}>Player</Typography>
+              <Typography level={"body-sm"}>{playerTotal}</Typography>
+            </Stack>
+          </Stack>
+          <Button onClick={handlePlayAgain}>Play again</Button>
         </ModalDialog>
       </Modal>
     </>

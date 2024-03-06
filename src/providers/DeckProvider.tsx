@@ -80,16 +80,6 @@ const DeckProvider: React.FC<DeckProviderProp> = ({ children }) => {
     setDeck(deck);
   };
 
-  const setHands = async () => {
-    const url = `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/draw/?count=2`;
-
-    const dealerHand = (await fetchGame(url)) as DrawCardTypes;
-    const playerHand = (await fetchGame(url)) as DrawCardTypes;
-    console.log(dealerHand, playerHand);
-    setDealerCards(dealerHand.cards);
-    setPlayerCards(playerHand.cards);
-  };
-
   const handleShuffle = () => {
     fetchGame(
       `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/shuffle/?remaining=true`
@@ -111,6 +101,20 @@ const DeckProvider: React.FC<DeckProviderProp> = ({ children }) => {
     setPlayerCards((prev) => {
       return [...prev, ...deck.cards];
     });
+  };
+
+  const setHands = async () => {
+    const url = `https://www.deckofcardsapi.com/api/deck/${currentDeck.deck_id}/draw/?count=2`;
+
+    const dealerHand = (await fetchGame(url)) as DrawCardTypes;
+    const playerHand = (await fetchGame(url)) as DrawCardTypes;
+
+    if (!dealerHand.success) {
+      playAgain();
+    }
+
+    setDealerCards(dealerHand.cards);
+    setPlayerCards(playerHand.cards);
   };
 
   const getWinner = () => {
