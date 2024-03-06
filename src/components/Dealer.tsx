@@ -18,7 +18,7 @@ const DealerCards = ({ dealerCards }) => {
           </>
         )}
       </Stack>
-      <Typography level="h4" textColor={"gold"} pb={2}>
+      <Typography level="h4" textColor={"gold"} pt={2}>
         Dealer
       </Typography>
     </Stack>

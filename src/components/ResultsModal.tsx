@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Button, Modal, ModalClose, ModalDialog, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  Modal,
+  ModalClose,
+  ModalDialog,
+  Typography,
+} from "@mui/joy";
 import { useDeck } from "../providers/DeckProvider";
 const ResultsModal: React.FC = () => {
   const { getWinner, setHands } = useDeck();
@@ -12,13 +19,24 @@ const ResultsModal: React.FC = () => {
 
   return (
     <>
-      <Button onClick={handleModalState}>Stand</Button>
+      <Button onClick={handleModalState} sx={{ borderRadius: 100 }}>
+        Stand
+      </Button>
       <Modal open={open} onClose={handleModalState}>
         <ModalDialog>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography level={"h3"}>{winner}</Typography>
+          </Box>
           <ModalClose />
+          <Typography>Game Score</Typography>
           <Typography>{houseTotal}</Typography>
           <Typography>{playerTotal}</Typography>
-          <Typography>{winner}</Typography>
           <Button onClick={() => setHands()}>Play again</Button>
         </ModalDialog>
       </Modal>

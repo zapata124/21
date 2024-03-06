@@ -1,12 +1,13 @@
 import { Button, Card, Stack, Typography } from "@mui/joy";
 import { CardTypes, useDeck } from "../providers/DeckProvider";
+import ResultsModal from "./ResultsModal";
 
 const Player: React.FC = () => {
   const { playerCards, drawCard } = useDeck();
 
   return (
     <Stack justifyContent={"center"} alignItems={"center"}>
-      <Typography level="h4" textColor={"gold"} pt={2}>
+      <Typography level="h4" textColor={"gold"} pb={2}>
         Player
       </Typography>
       <Stack direction={"row"}>
@@ -21,7 +22,12 @@ const Player: React.FC = () => {
             })}
           </>
         )}
-        <Button onClick={() => drawCard()}>Hit</Button>
+      </Stack>
+      <Stack direction={"row"} spacing={2} mt={2}>
+        <ResultsModal />
+        <Button onClick={() => drawCard()} sx={{ borderRadius: 100 }}>
+          Hit
+        </Button>
       </Stack>
     </Stack>
   );
