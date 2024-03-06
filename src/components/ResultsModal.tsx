@@ -37,7 +37,7 @@ const ResultsModal: React.FC = () => {
               alignItems: "center",
             }}
           >
-            <Typography level={"h3"}>{winner}</Typography>
+            <Typography level={"h3"}>{winner} Wins!</Typography>
           </Box>
           <ModalClose />
           <Stack justifyContent={"center"} alignItems={"center"}>

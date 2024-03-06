@@ -18,7 +18,7 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deck_id]);
-  useEffect(() => {}, []);
+
   return (
     <>
       <Box
