@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/joy";
 import { useDeck } from "../providers/DeckProvider";
+
 const ResultsModal: React.FC = () => {
   const { getWinner, setHands } = useDeck();
   const { houseTotal, playerTotal, winner } = getWinner();
