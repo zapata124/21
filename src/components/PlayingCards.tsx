@@ -5,12 +5,7 @@ interface PlayingCardProp {
   children?: React.ReactNode;
 }
 const PlayingCard: React.FC<PlayingCardProp> = ({ children }) => {
-  return (
-    <Card sx={{ width: "8rem" }}>
-      {children}
-      <img src={Club} alt="game-card" />
-    </Card>
-  );
+  return <Card sx={{ width: "8rem" }}>{children}</Card>;
 };
 
 export default PlayingCard;
